@@ -9,20 +9,17 @@ import (
 	"unicode"
 )
 
-var passwordRunes = []rune("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&-_<>?")
+var passwordRunes = []rune("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&-_?")
 
-type account struct {
-	login    string
-	password string
-	url      string
-}
-type accountWithTimeStamp struct {
-	createdAt time.Time
-	updatedAt time.Time
-	account
+type Account struct {
+	Login     string    `json:"login"`
+	Password  string    `json:"password"`
+	Url       string    `json:"url"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func NewAccount(login string, password string, urlString string) (*account, error) {
+func NewAccount(login string, password string, urlString string) (*Account, error) {
 	if login == "" {
 		return nil, errors.New("login required")
 	}
@@ -31,25 +28,27 @@ func NewAccount(login string, password string, urlString string) (*account, erro
 		return nil, fmt.Errorf("invalid url: %w", urlErr)
 	}
 
-	acc := account{
-		login: login,
-		url:   urlString,
+	acc := Account{
+		Login:     login,
+		Url:       urlString,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
 	}
 
 	if !validatePassword(password) {
 		acc.generatePassword(10)
 	} else {
-		acc.password = password
+		acc.Password = password
 	}
 
 	return &acc, nil
 }
 
-func (a *account) DisplayAccountInfo() {
-	fmt.Println(a.login, a.password, a.url)
+func (a *Account) DisplayAccountInfo() {
+	fmt.Println(a.Login, a.Password, a.Url)
 }
 
-func (a *account) generatePassword(length int) {
+func (a *Account) generatePassword(length int) {
 	password := make([]rune, length)
 
 	for {
@@ -58,7 +57,7 @@ func (a *account) generatePassword(length int) {
 		}
 
 		if validatePassword(string(password)) {
-			a.password = string(password)
+			a.Password = string(password)
 			return
 		}
 	}
