@@ -25,7 +25,7 @@ type VaultWithDB struct {
 }
 
 func NewVault(db DB, encrypter encrypter.Encrypter) *VaultWithDB {
-	data, readErr := db.Read()
+	decryptedData, readErr := db.Read()
 	if readErr != nil {
 		return &VaultWithDB{
 			Vault: Vault{
@@ -36,6 +36,9 @@ func NewVault(db DB, encrypter encrypter.Encrypter) *VaultWithDB {
 			encrypter: encrypter,
 		}
 	}
+
+	data := encrypter.Decrypt(decryptedData)
+
 	var vault Vault
 
 	err := json.Unmarshal(data, &vault)
@@ -103,11 +106,12 @@ func (v *VaultWithDB) DeleteAccountByUrl(url string) bool {
 func (v *VaultWithDB) save() {
 	v.Vault.UpdatedAt = time.Now()
 	data, convertErr := v.Vault.ConvertToBytes()
+	encryptedData := v.encrypter.Encrypt(data)
 	if convertErr != nil {
 		panic(convertErr)
 	}
 
-	writeErr := v.db.Write(data)
+	writeErr := v.db.Write(encryptedData)
 	if writeErr != nil {
 		panic(writeErr)
 	}

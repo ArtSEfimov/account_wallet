@@ -13,7 +13,7 @@ type Encrypter struct {
 }
 
 func NewEncrypter() *Encrypter {
-	key := os.Getenv("ENCRYPT_KEY")
+	key := os.Getenv("KEY")
 	if key == "" {
 		panic("encrypt key not found")
 	}

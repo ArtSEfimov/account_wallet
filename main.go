@@ -24,7 +24,7 @@ func main() {
 
 	fmt.Println("Starting password manager...")
 
-	vault := account.NewVault(files.NewJSONdb("data.json"), *encrypter.NewEncrypter())
+	vault := account.NewVault(files.NewJSONdb("data.txt"), *encrypter.NewEncrypter())
 
 Menu:
 	for {
