@@ -15,8 +15,8 @@ type Account struct {
 	Login     string    `json:"login"`
 	Password  string    `json:"password"`
 	Url       string    `json:"url"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time `json:"account_created_at"`
+	UpdatedAt time.Time `json:"account_updated_at"`
 }
 
 func NewAccount(login string, password string, urlString string) (*Account, error) {
